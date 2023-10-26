@@ -1,5 +1,19 @@
+# Define the package names you want to install
+packages_to_install <- c("tm", "quanteda", "spacyr")
+
+# Check if each package is already installed, and install it if not
+for (package in packages_to_install) {
+  if (!requireNamespace(package, quietly = TRUE)) {
+    install.packages(package)
+  }
+}
+library(spacyr)
 library(tm)
 library(quanteda)
+
+spacy_install("en_core_web_sm")
+spacy_initialize("en_core_web_sm")
+
 
 #Read data
 # Define the root directory where the data is located
@@ -30,8 +44,10 @@ for (category in categories) {
 #unlist(strsplit(string, "(?<=[[:punct:]])\\s(?=[A-Z])", perl=T))
 
 preprocess_text <- function(text) {
-  #text <- tolower(text)
-  text <- tokens(text, what = "sentence")
+  doc <- spacy_parce(text)
+  sentences <- doc$doc_sents
+
+  text <- tokens(sentences, what = "sentence")
   text <- tokens_tolower(text)
   text <- tokens_remove(text, stopwords("english"))
   text <- tokens_replace(text, pattern = "\\p{P}", replacement = "")
