@@ -1,18 +1,16 @@
-install.packages("tm")
-install.packages("quanteda")
 library(tm)
 library(quanteda)
 
 #Read data
 # Define the root directory where the data is located
-root_dir <- "/Users/leosponnich/Documents/ECON3170/BBC News Summary"
+root_dir <- file.path(getwd(), "BBC News Summary")
 
 # Create a list to store articles and summaries
 articles <- list()
 summaries <- list()
 
 # Loop through the categories and read the data
-categories <- c("business","entertainment","politics","sports","tech")
+categories <- c("business", "entertainment","politics","sport","tech")
 for (category in categories) {
   article_dir <- file.path(root_dir, "news articles", category)
   summary_dir <- file.path(root_dir, "summaries", category)
@@ -21,37 +19,37 @@ for (category in categories) {
   summary_files <- list.files(summary_dir, full.names = TRUE)
   
   # Read and store articles and summaries
-  articles[[category]] <- lapply(article_files, readLines)
-  summaries[[category]] <- lapply(summary_files, readLines)
+  articles <- c(articles, lapply(article_files, readLines))
+  summaries <- c(summaries, lapply(summary_files, readLines, warn = FALSE))
 }
+
 
 #preprocess text
 # Example text preprocessing using quanteda
+
+#unlist(strsplit(string, "(?<=[[:punct:]])\\s(?=[A-Z])", perl=T))
+
 preprocess_text <- function(text) {
-  text <- tolower(text)
-  text <- tokens(text)
+  #text <- tolower(text)
+  text <- tokens(text, what = "sentence")
+  text <- tokens_tolower(text)
   text <- tokens_remove(text, stopwords("english"))
   text <- tokens_replace(text, pattern = "\\p{P}", replacement = "")
   return(text)
 }
 
 # Preprocess articles and summaries
-preprocessed_articles <- lapply(articles, function(cat_articles) {
-  lapply(cat_articles, preprocess_text)
-})
+preprocessed_articles <- lapply(articles, preprocess_text)
 
-preprocessed_summaries <- lapply(summaries, function(cat_summaries) {
-  lapply(cat_summaries, preprocess_text)
-})
+preprocessed_summaries <- lapply(summaries, preprocess_text)
 
 
 #organize data
 # Create data frames or lists to store the preprocessed data
 # For example, you can create a data frame with columns for category, article, and summary.
 preprocessed_data <- data.frame(
-  Category = rep(categories, each = sapply(preprocessed_articles, length)),
-  Article = unlist(preprocessed_articles),
-  Summary = unlist(preprocessed_summaries)
+  Article = preprocessed_articles,
+  Summary = preprocessed_summaries
 )
 
 # You can also store the preprocessed data in a list for easier access.
