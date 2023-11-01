@@ -43,6 +43,21 @@ preprocessed_articles <- lapply(articles, preprocess_text)
 
 preprocessed_summaries <- lapply(summaries, preprocess_text)
 
+allScores = list()
+
+#for (article in preprocessed_articles) {
+
+  corpus <- Corpus(VectorSource(article))
+  
+  dtm <- DocumentTermMatrix(corpus)
+  tfidf <- weightTfIdf(dtm)
+  tfidf_scores <- as.data.frame(as.matrix(tfidf))
+  
+  allScores <- append(allScores, tfidf_scores)
+  
+#}
+
+
 
 #organize data
 # Create data frames or lists to store the preprocessed data
