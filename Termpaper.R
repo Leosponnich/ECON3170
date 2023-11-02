@@ -21,7 +21,12 @@ for (category in categories) {
   # Read and store articles and summaries
   articles <- c(articles, lapply(article_files, readLines))
   summaries <- c(summaries, lapply(summary_files, readLines, warn = FALSE))
+  
+  
 }
+cleaned_articles <- lapply(articles, function(article) Filter(nzchar, article))
+cleaned_summaries <- lapply(summaries, function(summary) Filter(nzchar, summary))
+
 
 
 #preprocess text
@@ -36,6 +41,7 @@ preprocess_text <- function(text) {
   text <- tokens_remove(text, stopwords("english"))
   text <- tokens_replace(text, pattern = "\\p{P}", replacement = "")
   return(text)
+  
 }
 
 # Preprocess articles and summaries
@@ -43,9 +49,24 @@ preprocessed_articles <- lapply(articles, preprocess_text)
 
 preprocessed_summaries <- lapply(summaries, preprocess_text)
 
-allScores = list()
+# Filter out inner lists with no text
+filtered_preprocessed_articles <- preprocessed_articles[sapply(preprocessed_articles, function(x) length(unlist(x)) > 0)]
+
+# If you want to also remove the corresponding original articles, you can do the same:
+filtered_articles <- articles[sapply(preprocessed_articles, function(x) length(unlist(x)) > 0)]
+
+
+#allScores = list()
 
 #for (article in preprocessed_articles) {
+
+  article <- preprocessed_articles[[1]]
+  
+  for (line in article) {
+    
+    
+    
+  }
 
   corpus <- Corpus(VectorSource(article))
   
