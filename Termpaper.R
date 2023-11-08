@@ -45,7 +45,7 @@ preprocess_text <- function(text) {
 }
 
 # Preprocess articles and summaries
-preprocessed_articles <- lapply(articles, preprocess_text)
+preprocessed_articles <- lapply(cleanarticles, preprocess_text)
 
 preprocessed_summaries <- lapply(summaries, preprocess_text)
 
