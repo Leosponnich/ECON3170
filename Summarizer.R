@@ -17,8 +17,6 @@ input_path <- file.choose()
 
 
 # Make summary
-
-
 input_article = readLines(input_path)
 input_cleaned <- Filter(nzchar, input_article)
 input_preprocessed = preprocess_text(input_cleaned)
@@ -36,10 +34,10 @@ input_flattened <- unlist(input_preprocessed)
 input_preprocessed_data <- data.frame(
   SentenceLength = unlist(input_sentence_lengths),
   AverageTFIDF = unlist(input_sentence_avg_scores)
-  #BelongsInSummary = unlist(article_belongsinsummary)
 )
 
 input_prediction <- predict(fit, new_data = input_preprocessed_data, type="prob")
+input_prediction$.pred_1[1:2] <- input_prediction$.pred_1[1:2] + c(0.12, 0.12)
 
 ideallength <- log( length ( input_flattened ) ) + 2
 ratio <- ideallength/length(input_flattened)
@@ -54,3 +52,6 @@ top_30_indices <- which(input_prediction$.pred_1 >= input_threshold)
 output <- input_flattened[top_30_indices]
 output2 <- paste(output, collapse=" ")
 print(output2)
+
+
+
