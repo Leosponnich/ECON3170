@@ -1,1 +1,1 @@
-# ECON3170
+# ECON3170 Term paper
