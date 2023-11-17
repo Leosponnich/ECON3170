@@ -1,1 +1,1 @@
-# ECON3170 Term paper
+# ECON3170 Project
